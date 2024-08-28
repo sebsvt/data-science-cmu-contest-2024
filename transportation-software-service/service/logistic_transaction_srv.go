@@ -14,8 +14,11 @@ func NewLogisticTransactionService(repo aggregate.LogisticTransactionRepository)
 	return logisticTransactionService{repo: repo}
 }
 
-// InsertMany implements LogisticTransactionService.
-func (srv logisticTransactionService) InsertMany(ctx context.Context, transactions []aggregate.LogisticTransaction) error {
-	err := srv.repo.InsertMany(ctx, transactions)
-	return err
+// GetLogsiticFromTransactionID implements LogisticTransactionService.
+func (srv logisticTransactionService) GetLogsiticFromTransactionID(ctx context.Context, transaction_id string) (*aggregate.LogisticTransaction, error) {
+	logistic_transactions, err := srv.repo.FromTransactionID(ctx, transaction_id)
+	if err != nil {
+		return nil, err
+	}
+	return logistic_transactions, nil
 }
