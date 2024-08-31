@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 80
 
 # Command to run the Next.js app
 CMD ["npm", "run", "dev"]
