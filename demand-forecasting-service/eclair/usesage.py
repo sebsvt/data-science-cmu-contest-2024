@@ -17,6 +17,7 @@ def demand_forecaste_next_day_from_the_last_date(data: pd.DataFrame, datetime_co
 	demand_forecast = prophet_forecasting_model(data=data_frame, periods=1)
 	kpis = forecast_kpi(demand_forecast)
 	return {
+		'name': filter_by,
 		"from_last_date": data_frame[datetime_col].max(),
 		"predicted_demand": [{
 			"date": demand_forecast['Date'].tail(1).values[0],
