@@ -4,8 +4,8 @@ FROM node:22.7.0-alpine
 WORKDIR /app
 
 # Install dependencies
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm install
 
 # Copy the application code
 COPY . .
@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to run the Next.js app
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]
