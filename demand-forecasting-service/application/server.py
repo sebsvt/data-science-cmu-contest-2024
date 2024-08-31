@@ -1,5 +1,4 @@
 from application.routes import router as api_router
-
 from fastapi import FastAPI
 
 # How many product demands for each provinces
@@ -15,4 +14,4 @@ def get_application() -> FastAPI:
 	app.include_router(router=api_router, prefix='/api')
 	return app
 
-app =get_application()
+app = get_application()

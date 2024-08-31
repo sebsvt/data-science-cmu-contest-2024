@@ -9,3 +9,14 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - 27017:27017
+
+  nextjs:
+    build:
+      context: ./orchestra/
+      dockerfile: Dockerfile
+    container_name: nextjs_app
+    command: yarn dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app

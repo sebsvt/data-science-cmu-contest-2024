@@ -2,15 +2,22 @@ import pandas as pd
 import numpy as np
 
 def forecast_kpi(df: pd.DataFrame):
+	kpis = {}
 	demand_avg = df.loc[df['Error'].notnull(), 'Demand'].mean()
+
 	bias_abs = df['Error'].mean()
 	bias_rel = bias_abs/demand_avg
-	print('Bias: {:0.2f}, {:.2%}'.format(bias_abs,bias_rel))
+	kpis['bias_rel'] = round(bias_rel, 2)
+
 	MAPE = (df['Error'].abs()/df['Demand']).mean()
-	print('MAPE: {:.2%}'.format(MAPE))
+	kpis['mape'] = round(MAPE, 2)
+
 	MAE_abs = df['Error'].abs().mean()
 	MAE_rel = MAE_abs / demand_avg
-	print('MAE: {:0.2f}, {:.2%}'.format(MAE_abs, MAE_rel))
+	kpis['mae'] = round(MAE_rel, 2)
+
 	RMSE_abs = np.sqrt((df["Error"] ** 2).mean())
 	RMSE_rel = RMSE_abs / demand_avg
-	print('RMSE: {:0.2f}, {:.2%}'.format(RMSE_abs, RMSE_rel))
+	kpis['rmse'] = round(RMSE_rel, 2)
+
+	return kpis

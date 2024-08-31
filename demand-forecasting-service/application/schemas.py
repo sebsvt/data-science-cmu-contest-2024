@@ -18,8 +18,10 @@ class ForecastingDemandStatusEnum(str, Enum):
 class ForecastingDemandRequest(BaseModel):
 	title: str
 	description: str
+	timeseries_name: str
+	demand_type_column: str
+	items: list[str]
 	predicted_column_name: str #(aka: Y, label)
-	features: list[str]
 
 class ForecastingDemand(BaseModel):
 	title: str
