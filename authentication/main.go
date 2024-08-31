@@ -40,7 +40,7 @@ func main() {
 
 	api.Post("/user-profiles/:user_id/create", user_profile_handler.CreateNewUserProfile)
 	api.Get("/user-profiles/:user_id", user_profile_handler.GetUserProfile)
-	api.Put("/user-profiles/:user_id", user_profile_handler.UpdateUserProfile)
+	// api.Put("/user-profiles/:user_id", user_profile_handler.UpdateUserProfile)
 	app.Listen(":8000")
 }
 
