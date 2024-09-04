@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/sebsvt/software-prototype/transportation-software-services/aggregate"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,18 +19,13 @@ func NewLogisticTransactionRepositoryMongoDB(collection *mongo.Collection) aggre
 }
 
 // FromTransactionID implements aggregate.LogisticTransactionRepository.
-func (repo logisticTransactionRepositoryMongoDB) FromTransactionID(ctx context.Context, transaction_id string) (*aggregate.LogisticTransaction, error) {
+func (repo logisticTransactionRepositoryMongoDB) FromTransactionID(ctx context.Context, transaction_id uuid.UUID) (*aggregate.LogisticTransaction, error) {
 	// Create a filter to find the document with the specific transaction_id
 	filter := bson.M{"transaction_id": transaction_id}
 
 	var transaction aggregate.LogisticTransaction
 	err := repo.collection.FindOne(ctx, filter).Decode(&transaction)
 	if err != nil {
-		// if errors.Is(err, mongo.ErrNoDocuments) {
-		// 	// Handle the case where no document was found
-		// 	return nil, nil
-		// }
-		// Return the error if there was an issue with the query
 		return nil, err
 	}
 
