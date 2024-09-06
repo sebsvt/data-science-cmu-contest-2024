@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  mongodb_logistic_transaction:
+    image: mongo:4.2.17
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - 27017:27017

@@ -7,7 +7,7 @@ def forecast_kpi(df: pd.DataFrame):
 
 	bias_abs = df['Error'].mean()
 	bias_rel = bias_abs/demand_avg
-	kpis['bias_rel'] = round(bias_rel, 2)
+	kpis['bias_rel'] = bias_rel
 
 	MAPE = (df['Error'].abs()/df['Demand']).mean()
 	kpis['mape'] = round(MAPE, 2)

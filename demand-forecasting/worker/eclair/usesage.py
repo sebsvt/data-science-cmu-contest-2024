@@ -18,9 +18,9 @@ def demand_forecaste_next_day_from_the_last_date(data: pd.DataFrame, datetime_co
 	kpis = forecast_kpi(demand_forecast)
 	return {
 		'name': filter_by,
-		"from_last_date": data_frame[datetime_col].max(),
+		"from_last_date": data[datetime_col].max(),
 		"predicted_demand": [{
-			"date": demand_forecast['Date'].tail(1).values[0],
+			"future_date": demand_forecast['Date'].tail(1).values[0],
 			"demand": demand_forecast['Forecast'].tail(1).values[0],
 		}],
 		"kpis": kpis

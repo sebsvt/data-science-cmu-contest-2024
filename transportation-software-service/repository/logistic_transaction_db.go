@@ -3,8 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/google/uuid"
-	"github.com/sebsvt/software-prototype/transportation-software-services/aggregate"
+	"github.com/sebsvt/software-prototype/transportation-software-services/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -14,16 +13,16 @@ type logisticTransactionRepositoryMongoDB struct {
 	collection *mongo.Collection
 }
 
-func NewLogisticTransactionRepositoryMongoDB(collection *mongo.Collection) aggregate.LogisticTransactionRepository {
+func NewLogisticTransactionRepositoryMongoDB(collection *mongo.Collection) domain.LogisticTransactionRepository {
 	return logisticTransactionRepositoryMongoDB{collection: collection}
 }
 
-// FromTransactionID implements aggregate.LogisticTransactionRepository.
-func (repo logisticTransactionRepositoryMongoDB) FromTransactionID(ctx context.Context, transaction_id uuid.UUID) (*aggregate.LogisticTransaction, error) {
+// FromTransactionID implements domain.LogisticTransactionRepository.
+func (repo logisticTransactionRepositoryMongoDB) FromTransactionID(ctx context.Context, transaction_id string) (*domain.LogisticTransactionAggregate, error) {
 	// Create a filter to find the document with the specific transaction_id
 	filter := bson.M{"transaction_id": transaction_id}
 
-	var transaction aggregate.LogisticTransaction
+	var transaction domain.LogisticTransactionAggregate
 	err := repo.collection.FindOne(ctx, filter).Decode(&transaction)
 	if err != nil {
 		return nil, err
@@ -32,8 +31,8 @@ func (repo logisticTransactionRepositoryMongoDB) FromTransactionID(ctx context.C
 	return &transaction, nil
 }
 
-// Save implements aggregate.LogisticTransactionRepository.
-func (repo logisticTransactionRepositoryMongoDB) Save(ctx context.Context, entity *aggregate.LogisticTransaction) error {
+// Save implements domain.LogisticTransactionRepository.
+func (repo logisticTransactionRepositoryMongoDB) Save(ctx context.Context, entity *domain.LogisticTransactionAggregate) error {
 	// Create a filter to find the document with the specific transaction_id
 	filter := bson.M{"transaction_id": entity.TransactionID}
 
@@ -52,7 +51,7 @@ func (repo logisticTransactionRepositoryMongoDB) Save(ctx context.Context, entit
 	return nil
 }
 
-func (repo logisticTransactionRepositoryMongoDB) InsertMany(ctx context.Context, entities []aggregate.LogisticTransaction) error {
+func (repo logisticTransactionRepositoryMongoDB) InsertMany(ctx context.Context, entities []domain.LogisticTransactionAggregate) error {
 	// Convert the slice of LogisticTransaction entities into a slice of interface{}
 	var docs []interface{}
 	for _, entity := range entities {
@@ -68,4 +67,16 @@ func (repo logisticTransactionRepositoryMongoDB) InsertMany(ctx context.Context,
 
 	// Return the IDs of the inserted documents
 	return nil
+}
+
+func (repo logisticTransactionRepositoryMongoDB) FromID(ctx context.Context, id string) (*domain.LogisticTransactionAggregate, error) {
+	filter := bson.M{"_id": id}
+
+	var transaction domain.LogisticTransactionAggregate
+	err := repo.collection.FindOne(ctx, filter).Decode(&transaction)
+	if err != nil {
+		return nil, err
+	}
+
+	return &transaction, nil
 }

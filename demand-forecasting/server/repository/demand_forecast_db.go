@@ -20,10 +20,10 @@ func NewDemandForecastRepositoryDB(collection *mongo.Collection) aggregate.Deman
 	}
 }
 
-func (repo demandForecastRepositoryDB) NextIdentity() uuid.UUID {
-	return uuid.New()
+func (repo demandForecastRepositoryDB) NextIdentity() string {
+	return uuid.New().String()
 }
-func (repo demandForecastRepositoryDB) FromForecastID(ctx context.Context, forecast_id uuid.UUID) (*aggregate.DemandForecast, error) {
+func (repo demandForecastRepositoryDB) FromForecastID(ctx context.Context, forecast_id string) (*aggregate.DemandForecast, error) {
 	var demand_forecast aggregate.DemandForecast
 	filter := bson.M{
 		"forecast_id": forecast_id,

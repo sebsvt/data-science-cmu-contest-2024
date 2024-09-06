@@ -6,20 +6,19 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/sebsvt/software-prototype/transportation-software-services/aggregate"
-	"github.com/sebsvt/software-prototype/transportation-software-services/entity"
+	"github.com/sebsvt/software-prototype/transportation-software-services/domain"
 )
 
 type logisticTransactionService struct {
-	repo aggregate.LogisticTransactionRepository
+	repo domain.LogisticTransactionRepository
 }
 
-func NewLogisticTransactionService(repo aggregate.LogisticTransactionRepository) LogisticTransactionService {
+func NewLogisticTransactionService(repo domain.LogisticTransactionRepository) LogisticTransactionService {
 	return logisticTransactionService{repo: repo}
 }
 
 // GetLogsiticFromTransactionID implements LogisticTransactionService.
-func (srv logisticTransactionService) GetLogsiticFromTransactionID(ctx context.Context, transaction_id uuid.UUID) (*aggregate.LogisticTransaction, error) {
+func (srv logisticTransactionService) GetLogsiticFromTransactionID(ctx context.Context, transaction_id string) (*domain.LogisticTransactionAggregate, error) {
 	logistic_transactions, err := srv.repo.FromTransactionID(ctx, transaction_id)
 	if err != nil {
 		return nil, err
@@ -27,21 +26,29 @@ func (srv logisticTransactionService) GetLogsiticFromTransactionID(ctx context.C
 	return logistic_transactions, nil
 }
 
-func (srv logisticTransactionService) CreateNewTransactionWithItem(ctx context.Context, consignor entity.Person, consignee entity.Person, package_item entity.Item, partner_id uuid.UUID) (uuid.UUID, error) {
-	transaction_id := uuid.New()
-	new_transaction := aggregate.LogisticTransaction{
+func (srv logisticTransactionService) CreateNewTransactionWithItem(ctx context.Context, transaction LogisticTransactionCreated, partner_id string) (string, error) {
+	transaction_id := uuid.New().String()
+	new_transaction := domain.LogisticTransactionAggregate{
 		TransactionID: transaction_id,
-		Consignor:     consignor,
-		Consignee:     consignee,
+		Consignor:     transaction.Consignor,
+		Consignee:     transaction.Consignee,
 		Status:        "pending",
 		PartnerID:     partner_id,
-		Package:       package_item,
+		Package:       transaction.Package,
 		Timestamp:     time.Now(),
 		DeletedAt:     nil,
 	}
 	if err := srv.repo.Save(ctx, &new_transaction); err != nil {
 		fmt.Println(err)
-		return uuid.Nil, err
+		return "", err
 	}
 	return transaction_id, nil
+}
+
+func (srv logisticTransactionService) GetLogsiticFromID(ctx context.Context, id string) (*domain.LogisticTransactionAggregate, error) {
+	transaction, err := srv.repo.FromID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return transaction, nil
 }

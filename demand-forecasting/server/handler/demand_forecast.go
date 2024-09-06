@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/sebsvt/message-broker/service"
 )
 
@@ -39,13 +38,9 @@ func (h demandForecastHandler) CreateNewDemandForecast(c *fiber.Ctx) error {
 
 func (h demandForecastHandler) GetDemandForecastFromID(c *fiber.Ctx) error {
 	forecast_id := c.Params("forecast_id")
-	id, err := uuid.Parse(forecast_id)
-	if err != nil {
-		return err
-	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	demand_forecast, err := h.demand_srv.GetDemandForecastByID(ctx, id)
+	demand_forecast, err := h.demand_srv.GetDemandForecastByID(ctx, forecast_id)
 	if err != nil {
 		return err
 	}
