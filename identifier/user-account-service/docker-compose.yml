@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  user_account_api:
+    image: sebastian992/user-account-api
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_SSLMODE=${DATABASE_SSLMODE}
+      - DATABASE_DB=${DATABASE_DB}
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - db_user_account
+
+  db_user_account:
+    image: postgres:14-alpine
+    container_name: user-account-database
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_DB}
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
